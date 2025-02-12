@@ -1,2 +1,2 @@
 # ts-audio-engine
-Barebones audio engine to dynamically run sounds with spatial attenuation and other runtime control
+Barebones audio engine to dynamically run sounds with instance stealing and other runtime control

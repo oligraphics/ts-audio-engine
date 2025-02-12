@@ -1,0 +1,1 @@
+{"version":3,"file":"audio.event.dto.d.ts","sourceRoot":"src/","sources":["dto/events/audio.event.dto.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,kBAAkB,EAAE,MAAM,mCAAmC,CAAC;AAEvE,MAAM,MAAM,aAAa,GAAG;IAC1B,IAAI,EAAE,kBAAkB,CAAC;CAC1B,CAAC"}

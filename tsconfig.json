@@ -1,0 +1,24 @@
+{
+  "extends": "@tsconfig/node-lts/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "sourceRoot": "src",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "module": "CommonJS",
+    // Ensures compatibility with Node resolution
+    "moduleResolution": "node",
+    "target": "ES2023",
+    // Target at least ESNext for ESM support
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": false,
+    "lib": [
+      "dom",
+      "ES2023"
+    ]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test"]  // Adjust path as needed
+}
