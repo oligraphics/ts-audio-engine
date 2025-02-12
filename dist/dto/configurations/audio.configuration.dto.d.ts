@@ -15,6 +15,24 @@ export type AudioConfigurationDto = {
     /**
      * @default 1
      */
+    volume?: number;
+    /**
+     * @default 1
+     */
+    pitch?: number;
+    randomize?: {
+        /**
+         * @default 0
+         */
+        pitch?: number;
+        /**
+         * @default 0
+         */
+        volume?: number;
+    };
+    /**
+     * @default 1
+     */
     maxInstances?: number;
     /**
      * @default OLDEST

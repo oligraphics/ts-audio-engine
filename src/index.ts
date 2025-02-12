@@ -10,7 +10,10 @@ export * from './dto/events/audio-volume-changed.event.dto';
 
 export * from './dto/instances/runtime-audio.instance.dto';
 
+export * from './dto/options/play.options.dto';
+
 export * from './enums/audio-event-type.enum';
 export * from './enums/audio-stealing-strategy.enum';
 
 export * from './models/audio-engine.model';
+export * from './models/single-track-mixer.model';

@@ -75,6 +75,7 @@ class AudioEngine {
             element.src = url;
             element.loop = type.loop ?? false;
             element.autoplay = false;
+            element.preservesPitch = false;
             element.ontimeupdate = () => {
                 this.bus.trigger(audio_event_type_enum_1.AudioEventTypeEnum.TIME_UPDATE, {
                     type: audio_event_type_enum_1.AudioEventTypeEnum.TIME_UPDATE,
@@ -160,15 +161,31 @@ class AudioEngine {
             }
             return undefined;
         }
+        const type = this.types.get(typeId);
         const playing = this.playing.get(typeId) ?? new Map();
         playing.set(instance.id, instance);
         this.playing.set(typeId, playing);
         if (this.debug) {
             console.debug('Play', typeId, 'active instances:', playing.size);
         }
-        const volume = options?.volume !== undefined ? options.volume : 1;
+        const baseVolume = options?.volume !== undefined ? options.volume : 1;
+        const typeVolume = type?.volume ?? 1;
+        const randomTypeVolume = type?.randomize?.volume !== undefined
+            ? Math.random() * type.randomize.volume
+            : 0;
+        const volume = baseVolume *
+            (typeVolume - (type?.randomize?.volume ?? 0) / 2 + randomTypeVolume);
+        const basePitch = type?.pitch ?? 1;
+        const randomPitch = type?.randomize?.pitch !== undefined
+            ? Math.random() * type.randomize.pitch
+            : 0;
+        const pitch = basePitch - (type?.randomize?.pitch ?? 0) / 2 + randomPitch;
         for (const element of instance.elements) {
             element.volume = volume;
+            element.playbackRate = pitch;
+        }
+        if (this.debug) {
+            console.debug('Volume', volume, 'Pitch', pitch);
         }
         const element = instance.elements[Math.floor(Math.random() * instance.elements.length)];
         instance.element = element;
@@ -179,6 +196,7 @@ class AudioEngine {
             type: audio_event_type_enum_1.AudioEventTypeEnum.PLAYED,
             audio: instance,
         });
+        return instance;
     }
     /**
      * Set the volume of a sound instance

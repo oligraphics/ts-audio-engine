@@ -1,6 +1,7 @@
 import { EventBus } from 'ts-event-bus';
 import { RuntimeAudioInstanceDto } from '../dto/instances/runtime-audio.instance.dto';
 import { AudioConfigurationDto } from '../dto/configurations/audio.configuration.dto';
+import { PlayOptionsDto } from '../dto/options/play.options.dto';
 declare class AudioEngine {
     /**
      * Bus to listen to events within the engine.
@@ -25,10 +26,7 @@ declare class AudioEngine {
     /**
      * Play a sound instance
      */
-    play(typeId: string, options?: {
-        volume?: number;
-        timeMs?: number;
-    }): RuntimeAudioInstanceDto | undefined;
+    play(typeId: string, options?: PlayOptionsDto): RuntimeAudioInstanceDto | undefined;
     /**
      * Set the volume of a sound instance
      */

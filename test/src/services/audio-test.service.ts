@@ -1,10 +1,11 @@
 import AudioEngine from '../../../src/models/audio-engine.model.ts'
 import { TestAudioTypeEnum } from '@/enums/test-audio-type.enum.ts'
-import { AudioEventTypeEnum } from '../../../src/enums/audio-event-type.enum.ts'
-import type { AudioEndedEventDto } from '../../../src/dto/events/audio-ended.event.dto.ts'
+import { SingleTrackMixerModel } from '../../../src'
 
 import RubberChicken from '@/assets/475732__dogwomble__rubber-chicken-3.wav'
 import SuccessMusic from '@/assets/751134__audiocoffee__success-every-day-short-ver.wav'
+import ElevatorMusic from '@/assets/467243__jay_you__music-elevator-ext-part-13.wav'
+import { TestMusicTypeEnum } from '@/enums/test-music-type.enum.ts'
 
 export const AudioTestService = new (class AudioTestService {
   readonly engine = new AudioEngine([
@@ -12,31 +13,43 @@ export const AudioTestService = new (class AudioTestService {
       id: TestAudioTypeEnum.RUBBER_CHICKEN,
       url: RubberChicken,
       maxInstances: 2,
+      randomize: {
+        pitch: 0.1,
+      },
     },
+  ])
+
+  readonly music = new SingleTrackMixerModel([
     {
-      id: TestAudioTypeEnum.SUCCESS_MUSIC,
+      id: TestMusicTypeEnum.SUCCESS_MUSIC,
       url: SuccessMusic,
       maxInstances: 1,
+      loop: true,
+    },
+    {
+      id: TestMusicTypeEnum.ELEVATOR_MUSIC,
+      url: ElevatorMusic,
+      maxInstances: 1,
+      loop: true,
     },
   ])
 
   constructor() {
     this.engine.debug = true
+    this.music.debug = true
+    this.music.start()
   }
 
-  async runMusic() {
-    this.engine.play(TestAudioTypeEnum.SUCCESS_MUSIC)
+  async playElevatorMusic() {
+    this.music.play(TestMusicTypeEnum.ELEVATOR_MUSIC)
+  }
 
-    await new Promise<void>((resolve) => {
-      const doneListener = (event: AudioEndedEventDto) => {
-        if (event.audio.typeId !== TestAudioTypeEnum.SUCCESS_MUSIC) {
-          return
-        }
-        this.engine.bus.off(AudioEventTypeEnum.ENDED, doneListener)
-        resolve()
-      }
-      this.engine.bus.on(AudioEventTypeEnum.ENDED, doneListener)
-    })
+  async playSuccessMusic() {
+    this.music.play(TestMusicTypeEnum.SUCCESS_MUSIC)
+  }
+
+  async playEmpty() {
+    this.music.playEmpty()
   }
 
   playRubberChicken() {

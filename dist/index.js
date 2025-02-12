@@ -23,7 +23,9 @@ __exportStar(require("./dto/events/audio-released.event.dto"), exports);
 __exportStar(require("./dto/events/audio-time-updated.event.dto"), exports);
 __exportStar(require("./dto/events/audio-volume-changed.event.dto"), exports);
 __exportStar(require("./dto/instances/runtime-audio.instance.dto"), exports);
+__exportStar(require("./dto/options/play.options.dto"), exports);
 __exportStar(require("./enums/audio-event-type.enum"), exports);
 __exportStar(require("./enums/audio-stealing-strategy.enum"), exports);
 __exportStar(require("./models/audio-engine.model"), exports);
+__exportStar(require("./models/single-track-mixer.model"), exports);
 //# sourceMappingURL=index.js.map

@@ -10,6 +10,7 @@ import { AudioReleasedEventDto } from '../dto/events/audio-released.event.dto';
 import { AudioConfigurationDto } from '../dto/configurations/audio.configuration.dto';
 import { IdService } from '../services/id.service';
 import { AudioStealingStrategyEnum } from '../enums/audio-stealing-strategy.enum';
+import { PlayOptionsDto } from '../dto/options/play.options.dto';
 
 class AudioEngine {
   /**
@@ -88,6 +89,8 @@ class AudioEngine {
       element.src = url;
       element.loop = type.loop ?? false;
       element.autoplay = false;
+      element.preservesPitch = false;
+
       element.ontimeupdate = () => {
         this.bus.trigger(AudioEventTypeEnum.TIME_UPDATE, <
           AudioTimeUpdatedEventDto
@@ -176,7 +179,7 @@ class AudioEngine {
    */
   play(
     typeId: string,
-    options?: { volume?: number; timeMs?: number },
+    options?: PlayOptionsDto,
   ): RuntimeAudioInstanceDto | undefined {
     const instance = this._getInstance(typeId);
     if (instance === undefined) {
@@ -190,6 +193,8 @@ class AudioEngine {
       return undefined;
     }
 
+    const type = this.types.get(typeId);
+
     const playing =
       this.playing.get(typeId) ?? new Map<string, RuntimeAudioInstanceDto>();
     playing.set(instance.id, instance);
@@ -199,9 +204,30 @@ class AudioEngine {
       console.debug('Play', typeId, 'active instances:', playing.size);
     }
 
-    const volume = options?.volume !== undefined ? options.volume : 1;
+    const baseVolume = options?.volume !== undefined ? options.volume : 1;
+    const typeVolume = type?.volume ?? 1;
+    const randomTypeVolume =
+      type?.randomize?.volume !== undefined
+        ? Math.random() * type.randomize.volume
+        : 0;
+    const volume =
+      baseVolume *
+      (typeVolume - (type?.randomize?.volume ?? 0) / 2 + randomTypeVolume);
+
+    const basePitch = type?.pitch ?? 1;
+    const randomPitch =
+      type?.randomize?.pitch !== undefined
+        ? Math.random() * type.randomize.pitch
+        : 0;
+    const pitch = basePitch - (type?.randomize?.pitch ?? 0) / 2 + randomPitch;
+
     for (const element of instance.elements) {
       element.volume = volume;
+      element.playbackRate = pitch;
+    }
+
+    if (this.debug) {
+      console.debug('Volume', volume, 'Pitch', pitch);
     }
 
     const element =
@@ -214,6 +240,7 @@ class AudioEngine {
       type: AudioEventTypeEnum.PLAYED,
       audio: instance,
     });
+    return instance;
   }
 
   /**

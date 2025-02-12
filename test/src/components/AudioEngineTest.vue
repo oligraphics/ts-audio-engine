@@ -1,19 +1,5 @@
 <script setup lang="ts">
 import { AudioTestService } from '@/services/audio-test.service.ts'
-import { reactive } from 'vue'
-
-const state = reactive({
-  musicPlaying: false,
-})
-
-const runMusic = async () => {
-  state.musicPlaying = true
-  try {
-    await AudioTestService.runMusic()
-  } finally {
-    state.musicPlaying = false
-  }
-}
 
 const playRubberChicken = () => {
   AudioTestService.playRubberChicken()
@@ -21,7 +7,12 @@ const playRubberChicken = () => {
 </script>
 
 <template>
-  <button v-if="!state.musicPlaying" @click="runMusic">Start Music</button>
+  <section>
+    <h1>Music</h1>
+    <button @click="AudioTestService.playElevatorMusic()">Elevator Music</button>
+    <button @click="AudioTestService.playSuccessMusic()">Success Music</button>
+    <button @click="AudioTestService.playEmpty()">Silence</button>
+  </section>
   <button @click="playRubberChicken">Rubber Chicken</button>
 </template>
 
