@@ -8,6 +8,8 @@ export declare class SingleTrackMixer {
     private previousInstance;
     private instance;
     private lastTick;
+    get volume(): number;
+    set volume(value: number);
     get debug(): boolean;
     set debug(value: boolean);
     constructor(tracks: AudioConfigurationDto[], options?: {

@@ -11,7 +11,7 @@ npm install
 ### Compile and Serve for Testing
 
 ```sh
-npm run dev
+npm run test
 ```
 
 ## Test Audio Files Credits

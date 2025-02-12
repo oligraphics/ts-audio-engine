@@ -10,6 +10,12 @@ class SingleTrackMixer {
     previousInstance = undefined;
     instance = undefined;
     lastTick = 0;
+    get volume() {
+        return this.engine.volume;
+    }
+    set volume(value) {
+        this.engine.volume = value;
+    }
     get debug() {
         return this.engine.debug;
     }
@@ -37,12 +43,12 @@ class SingleTrackMixer {
         const deltaTime = (time - this.lastTick) / this.transitionDurationMs;
         if (this.instance?.element) {
             const volume = this.instance.element.volume;
-            this.instance.element.volume = Math.min(1, volume + deltaTime);
+            this.engine.setVolume(this.instance, Math.min(1, volume + deltaTime));
         }
         if (this.previousInstance?.element) {
             const volume = this.previousInstance.element.volume;
             const newVolume = Math.max(0, volume - deltaTime);
-            this.previousInstance.element.volume = newVolume;
+            this.engine.setVolume(this.previousInstance, newVolume);
             if (newVolume <= 0) {
                 this.engine.pause(this.previousInstance);
                 this.previousInstance = undefined;

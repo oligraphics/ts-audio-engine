@@ -13,7 +13,11 @@ export declare class AudioEngine {
     private readonly cache;
     private readonly playing;
     private _audioConsentReceived;
+    private _globalVolume;
+    private _globalVolumeFactor;
     get audioConsentReceived(): boolean;
+    get volume(): number;
+    set volume(value: number);
     /**
      * Toggle console logging
      */

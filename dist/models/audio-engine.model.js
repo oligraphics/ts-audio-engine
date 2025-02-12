@@ -16,8 +16,25 @@ class AudioEngine {
     cache = new Map();
     playing = new Map();
     _audioConsentReceived = false;
+    _globalVolume = 1;
+    _globalVolumeFactor = 1;
     get audioConsentReceived() {
         return this._audioConsentReceived;
+    }
+    get volume() {
+        return this._globalVolume;
+    }
+    set volume(value) {
+        this._globalVolume = value;
+        this._globalVolumeFactor = 1 - Math.pow(1 - value, 2);
+        for (const playing of this.playing.values()) {
+            for (const instance of playing.values()) {
+                const element = instance.element;
+                if (element) {
+                    element.volume = instance.volume * this._globalVolumeFactor;
+                }
+            }
+        }
     }
     /**
      * Toggle console logging
@@ -82,6 +99,8 @@ class AudioEngine {
             id,
             typeId,
             url: type.url,
+            volume: 1,
+            pitch: 1,
             element: undefined,
             variant: Math.floor(Math.random() * urls.length),
             elements,
@@ -196,8 +215,10 @@ class AudioEngine {
             ? Math.random() * type.randomize.pitch
             : 0;
         const pitch = basePitch - (type?.randomize?.pitch ?? 0) / 2 + randomPitch;
+        instance.volume = volume;
+        instance.pitch = pitch;
         for (const element of instance.elements) {
-            element.volume = volume;
+            element.volume = volume * this._globalVolumeFactor;
             element.playbackRate = pitch;
         }
         if (this.debug) {
@@ -223,8 +244,9 @@ class AudioEngine {
         if (this.debug) {
             console.debug('Set volume of', instance.id, 'to', JSON.stringify(volume));
         }
+        instance.volume = volume;
         if (instance.element) {
-            instance.element.volume = volume;
+            instance.element.volume = volume * this._globalVolumeFactor;
         }
         this.bus.trigger(audio_event_type_enum_1.AudioEventTypeEnum.VOLUME_CHANGED, {
             type: audio_event_type_enum_1.AudioEventTypeEnum.VOLUME_CHANGED,

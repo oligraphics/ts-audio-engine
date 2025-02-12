@@ -55,4 +55,12 @@ export const AudioTestService = new (class AudioTestService {
   playRubberChicken() {
     this.engine.play(TestAudioTypeEnum.RUBBER_CHICKEN)
   }
+
+  setMusicVolume(volume: number) {
+    this.music.volume = volume
+  }
+
+  setEffectVolume(volume: number) {
+    this.engine.volume = volume
+  }
 })()

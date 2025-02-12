@@ -14,6 +14,24 @@ const playRubberChicken = () => {
     <button @click="AudioTestService.playEmpty()">Silence</button>
   </section>
   <button @click="playRubberChicken">Rubber Chicken</button>
+  <label
+    ><span>Music Volume</span>
+    <input
+      type="range"
+      min="0"
+      max="1"
+      step="0.01"
+      @input="AudioTestService.setMusicVolume(parseFloat($event.target['value']))"
+  /></label>
+  <label
+    ><span>Effect Volume</span>
+    <input
+      type="range"
+      min="0"
+      max="1"
+      step="0.01"
+      @input="AudioTestService.setEffectVolume(parseFloat($event.target['value']))"
+  /></label>
 </template>
 
 <style scoped>
