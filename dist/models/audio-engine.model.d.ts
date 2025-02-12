@@ -12,12 +12,15 @@ export declare class AudioEngine {
     private readonly types;
     private readonly cache;
     private readonly playing;
+    private _audioConsentReceived;
+    get audioConsentReceived(): boolean;
     /**
      * Toggle console logging
      */
     debug: boolean;
     constructor(audioTypes: AudioConfigurationDto[]);
     dispose(): void;
+    private readonly onDocumentClicked;
     /**
      * Create a new sound instance
      */

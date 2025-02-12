@@ -25,6 +25,12 @@ export class AudioEngine {
   private readonly playing: Map<string, Map<string, RuntimeAudioInstanceDto>> =
     new Map();
 
+  private _audioConsentReceived = false;
+
+  get audioConsentReceived() {
+    return this._audioConsentReceived;
+  }
+
   /**
    * Toggle console logging
    */
@@ -42,6 +48,8 @@ export class AudioEngine {
         }
       }
     }
+
+    document.addEventListener('click', this.onDocumentClicked);
   }
 
   dispose() {
@@ -60,6 +68,17 @@ export class AudioEngine {
     this.cache.clear();
     this.playing.clear();
   }
+
+  private readonly onDocumentClicked = () => {
+    this._audioConsentReceived = true;
+    document.removeEventListener('click', this.onDocumentClicked);
+    for (const playing of this.playing.values()) {
+      for (const instance of playing.values()) {
+        // noinspection JSIgnoredPromiseFromCall
+        instance.element?.play();
+      }
+    }
+  };
 
   /**
    * Create a new sound instance
@@ -235,7 +254,9 @@ export class AudioEngine {
     instance.element = element;
     element.currentTime =
       (options?.timeMs !== undefined ? options.timeMs : 0) / 1000;
-    element.play().catch((e) => console.error(e));
+    if (this._audioConsentReceived) {
+      element.play().catch((e) => console.error(e));
+    }
     this.bus.trigger(AudioEventTypeEnum.PLAYED, <AudioPlayedEventDto>{
       type: AudioEventTypeEnum.PLAYED,
       audio: instance,
