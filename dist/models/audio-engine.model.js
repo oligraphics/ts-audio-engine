@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AudioEngine = void 0;
 const ts_event_bus_1 = require("ts-event-bus");
 const audio_event_type_enum_1 = require("../enums/audio-event-type.enum");
 const id_service_1 = require("../services/id.service");
@@ -262,5 +263,5 @@ class AudioEngine {
         });
     }
 }
-exports.default = AudioEngine;
+exports.AudioEngine = AudioEngine;
 //# sourceMappingURL=audio-engine.model.js.map

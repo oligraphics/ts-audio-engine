@@ -1,6 +1,6 @@
-import AudioEngine from '../../../src/models/audio-engine.model.ts'
+import { AudioEngine } from '../../../src'
 import { TestAudioTypeEnum } from '@/enums/test-audio-type.enum.ts'
-import { SingleTrackMixerModel } from '../../../src'
+import { SingleTrackMixer } from '../../../src'
 
 import RubberChicken from '@/assets/475732__dogwomble__rubber-chicken-3.wav'
 import SuccessMusic from '@/assets/751134__audiocoffee__success-every-day-short-ver.wav'
@@ -19,7 +19,7 @@ export const AudioTestService = new (class AudioTestService {
     },
   ])
 
-  readonly music = new SingleTrackMixerModel([
+  readonly music = new SingleTrackMixer([
     {
       id: TestMusicTypeEnum.SUCCESS_MUSIC,
       url: SuccessMusic,

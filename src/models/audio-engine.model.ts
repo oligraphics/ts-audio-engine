@@ -12,7 +12,7 @@ import { IdService } from '../services/id.service';
 import { AudioStealingStrategyEnum } from '../enums/audio-stealing-strategy.enum';
 import { PlayOptionsDto } from '../dto/options/play.options.dto';
 
-class AudioEngine {
+export class AudioEngine {
   /**
    * Bus to listen to events within the engine.
    * @see AudioEventTypeEnum
@@ -312,5 +312,3 @@ class AudioEngine {
     });
   }
 }
-
-export default AudioEngine;

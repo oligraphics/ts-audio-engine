@@ -1,9 +1,9 @@
-import AudioEngine from './audio-engine.model';
+import { AudioEngine } from './audio-engine.model';
 import { AudioConfigurationDto } from '../dto/configurations/audio.configuration.dto';
 import { RuntimeAudioInstanceDto } from '../dto/instances/runtime-audio.instance.dto';
 import { PlayOptionsDto } from '../dto/options/play.options.dto';
 
-export class SingleTrackMixerModel {
+export class SingleTrackMixer {
   private readonly engine: AudioEngine;
   private readonly transitionDurationMs: number;
 

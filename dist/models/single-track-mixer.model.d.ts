@@ -1,6 +1,6 @@
 import { AudioConfigurationDto } from '../dto/configurations/audio.configuration.dto';
 import { PlayOptionsDto } from '../dto/options/play.options.dto';
-export declare class SingleTrackMixerModel {
+export declare class SingleTrackMixer {
     private readonly engine;
     private readonly transitionDurationMs;
     private disposed;

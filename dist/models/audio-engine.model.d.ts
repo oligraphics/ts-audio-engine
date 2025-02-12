@@ -2,7 +2,7 @@ import { EventBus } from 'ts-event-bus';
 import { RuntimeAudioInstanceDto } from '../dto/instances/runtime-audio.instance.dto';
 import { AudioConfigurationDto } from '../dto/configurations/audio.configuration.dto';
 import { PlayOptionsDto } from '../dto/options/play.options.dto';
-declare class AudioEngine {
+export declare class AudioEngine {
     /**
      * Bus to listen to events within the engine.
      * @see AudioEventTypeEnum
@@ -40,5 +40,4 @@ declare class AudioEngine {
      */
     release(instance: RuntimeAudioInstanceDto): void;
 }
-export default AudioEngine;
 //# sourceMappingURL=audio-engine.model.d.ts.map

@@ -1,11 +1,8 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SingleTrackMixerModel = void 0;
-const audio_engine_model_1 = __importDefault(require("./audio-engine.model"));
-class SingleTrackMixerModel {
+exports.SingleTrackMixer = void 0;
+const audio_engine_model_1 = require("./audio-engine.model");
+class SingleTrackMixer {
     engine;
     transitionDurationMs;
     disposed = false;
@@ -20,7 +17,7 @@ class SingleTrackMixerModel {
         this.engine.debug = value;
     }
     constructor(tracks, options) {
-        this.engine = new audio_engine_model_1.default(tracks);
+        this.engine = new audio_engine_model_1.AudioEngine(tracks);
         this.transitionDurationMs = options?.transitionDurationMs ?? 500;
         this.start();
     }
@@ -96,5 +93,5 @@ class SingleTrackMixerModel {
         this.instance = undefined;
     }
 }
-exports.SingleTrackMixerModel = SingleTrackMixerModel;
+exports.SingleTrackMixer = SingleTrackMixer;
 //# sourceMappingURL=single-track-mixer.model.js.map
