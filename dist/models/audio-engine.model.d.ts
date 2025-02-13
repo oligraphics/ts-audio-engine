@@ -15,8 +15,17 @@ export declare class AudioEngine {
     private _audioConsentReceived;
     private _globalVolume;
     private _globalVolumeFactor;
+    /**
+     * Audio consent is received after the first click event on the document
+     */
     get audioConsentReceived(): boolean;
+    /**
+     * Value between 0 and 1
+     */
     get volume(): number;
+    /**
+     * Value between 0 and 1
+     */
     set volume(value: number);
     /**
      * Toggle console logging

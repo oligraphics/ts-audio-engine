@@ -29,14 +29,23 @@ export class AudioEngine {
   private _globalVolume = 1;
   private _globalVolumeFactor = 1;
 
+  /**
+   * Audio consent is received after the first click event on the document
+   */
   get audioConsentReceived() {
     return this._audioConsentReceived;
   }
 
+  /**
+   * Value between 0 and 1
+   */
   get volume() {
     return this._globalVolume;
   }
 
+  /**
+   * Value between 0 and 1
+   */
   set volume(value: number) {
     this._globalVolume = value;
     this._globalVolumeFactor = 1 - Math.pow(1 - value, 2);
@@ -145,6 +154,7 @@ export class AudioEngine {
         });
       };
       element.onended = () => {
+        instance.playing = false;
         const playing = this.playing.get(typeId);
         if (playing) {
           playing.delete(instance.id);
@@ -267,6 +277,7 @@ export class AudioEngine {
 
     instance.volume = volume;
     instance.pitch = pitch;
+    instance.playing = true;
 
     for (const element of instance.elements) {
       element.volume = volume * this._globalVolumeFactor;

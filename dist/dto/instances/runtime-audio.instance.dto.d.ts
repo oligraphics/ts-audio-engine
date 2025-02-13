@@ -4,6 +4,10 @@ export type RuntimeAudioInstanceDto = {
     url: string | string[];
     volume: number;
     pitch: number;
+    /**
+     * Set to <code>false</code> once the audio element reports the end of the track
+     */
+    playing: boolean;
     variant: number;
     element: HTMLAudioElement | undefined;
     elements: HTMLAudioElement[];

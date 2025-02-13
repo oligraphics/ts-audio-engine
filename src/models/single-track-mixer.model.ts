@@ -125,7 +125,7 @@ export class SingleTrackMixer {
   }
 
   _endCurrent() {
-    if (this.instance?.element?.paused === false) {
+    if (this.instance?.playing === true) {
       const type = this.engine.getType(
         this.instance.typeId,
       ) as SingleTrackAudioConfigurationDto;

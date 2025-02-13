@@ -95,7 +95,7 @@ class SingleTrackMixer {
         this._endCurrent();
     }
     _endCurrent() {
-        if (this.instance?.element?.paused === false) {
+        if (this.instance?.playing === true) {
             const type = this.engine.getType(this.instance.typeId);
             if (type?.fadeOut ?? true) {
                 this.previousInstance = this.instance;
