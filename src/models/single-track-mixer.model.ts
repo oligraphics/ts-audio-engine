@@ -3,6 +3,11 @@ import { AudioConfigurationDto } from '../dto/configurations/audio.configuration
 import { RuntimeAudioInstanceDto } from '../dto/instances/runtime-audio.instance.dto';
 import { PlayOptionsDto } from '../dto/options/play.options.dto';
 
+export type SingleTrackAudioConfigurationDto = {
+  fadeIn?: boolean;
+  fadeOut?: boolean;
+} & AudioConfigurationDto;
+
 export class SingleTrackMixer {
   private readonly engine: AudioEngine;
   private readonly transitionDurationMs: number;
@@ -12,6 +17,9 @@ export class SingleTrackMixer {
 
   private previousInstance: RuntimeAudioInstanceDto | undefined = undefined;
   private instance: RuntimeAudioInstanceDto | undefined = undefined;
+
+  private fadeIn = true;
+  private fadeOut = true;
 
   private lastTick = 0;
 
@@ -32,7 +40,7 @@ export class SingleTrackMixer {
   }
 
   constructor(
-    tracks: AudioConfigurationDto[],
+    tracks: SingleTrackAudioConfigurationDto[],
     options?: { transitionDurationMs?: number },
   ) {
     this.engine = new AudioEngine(tracks);
@@ -55,13 +63,16 @@ export class SingleTrackMixer {
     }
     const time = Date.now();
     const deltaTime = (time - this.lastTick) / this.transitionDurationMs;
-    if (this.instance?.element) {
+    if (this.instance?.element && this.instance.element.volume < 1) {
       const volume = this.instance.element.volume;
-      this.engine.setVolume(this.instance, Math.min(1, volume + deltaTime));
+      this.engine.setVolume(
+        this.instance,
+        this.fadeIn ? Math.min(1, volume + deltaTime) : 1,
+      );
     }
     if (this.previousInstance?.element) {
       const volume = this.previousInstance.element.volume;
-      const newVolume = Math.max(0, volume - deltaTime);
+      const newVolume = this.fadeOut ? Math.max(0, volume - deltaTime) : 0;
       this.engine.setVolume(this.previousInstance, newVolume);
       if (newVolume <= 0) {
         this.engine.pause(this.previousInstance);
@@ -95,23 +106,39 @@ export class SingleTrackMixer {
     if (this.debug) {
       console.debug('Play single track', typeId);
     }
-    if (this.instance?.element?.paused === false) {
-      this.previousInstance = this.instance;
-      if (this.debug) {
-        console.debug('Fade out single track', this.previousInstance?.typeId);
-      }
-    }
+    this._endCurrent();
+    const type = this.engine.getType(
+      typeId,
+    ) as SingleTrackAudioConfigurationDto;
+    const fadeIn = type?.fadeIn ?? true;
     this.instance = this.engine.play(typeId, {
       ...(options ?? {}),
-      volume: 0,
+      volume: fadeIn ? 0 : 1,
     });
+    if (this.instance === this.previousInstance) {
+      this.previousInstance = undefined;
+    }
   }
 
   playEmpty() {
+    this._endCurrent();
+  }
+
+  _endCurrent() {
     if (this.instance?.element?.paused === false) {
-      this.previousInstance = this.instance;
-      if (this.debug) {
-        console.debug('Fade out single track', this.previousInstance?.typeId);
+      const type = this.engine.getType(
+        this.instance.typeId,
+      ) as SingleTrackAudioConfigurationDto;
+      if (type?.fadeOut ?? true) {
+        this.previousInstance = this.instance;
+        if (this.debug) {
+          console.debug('Fade out single track', this.previousInstance?.typeId);
+        }
+      } else {
+        this.engine.pause(this.instance);
+        if (this.debug) {
+          console.debug('Stop single track', this.instance.typeId);
+        }
       }
     }
     this.instance = undefined;

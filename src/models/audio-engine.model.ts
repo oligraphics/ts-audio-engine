@@ -88,6 +88,10 @@ export class AudioEngine {
     this.playing.clear();
   }
 
+  getType(typeId: string) {
+    return this.types.get(typeId);
+  }
+
   private readonly onDocumentClicked = () => {
     this._audioConsentReceived = true;
     document.removeEventListener('click', this.onDocumentClicked);

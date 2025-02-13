@@ -25,6 +25,8 @@ export const AudioTestService = new (class AudioTestService {
       url: SuccessMusic,
       maxInstances: 1,
       loop: true,
+      fadeIn: false,
+      fadeOut: false,
     },
     {
       id: TestMusicTypeEnum.ELEVATOR_MUSIC,
