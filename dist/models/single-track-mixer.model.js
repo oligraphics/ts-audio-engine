@@ -9,6 +9,8 @@ class SingleTrackMixer {
     playing = false;
     previousInstance = undefined;
     instance = undefined;
+    fadeIn = true;
+    fadeOut = true;
     lastTick = 0;
     get volume() {
         return this.engine.volume;
@@ -41,13 +43,13 @@ class SingleTrackMixer {
         }
         const time = Date.now();
         const deltaTime = (time - this.lastTick) / this.transitionDurationMs;
-        if (this.instance?.element) {
+        if (this.instance?.element && this.instance.element.volume < 1) {
             const volume = this.instance.element.volume;
-            this.engine.setVolume(this.instance, Math.min(1, volume + deltaTime));
+            this.engine.setVolume(this.instance, this.fadeIn ? Math.min(1, volume + deltaTime) : 1);
         }
         if (this.previousInstance?.element) {
             const volume = this.previousInstance.element.volume;
-            const newVolume = Math.max(0, volume - deltaTime);
+            const newVolume = this.fadeOut ? Math.max(0, volume - deltaTime) : 0;
             this.engine.setVolume(this.previousInstance, newVolume);
             if (newVolume <= 0) {
                 this.engine.pause(this.previousInstance);
@@ -78,22 +80,34 @@ class SingleTrackMixer {
         if (this.debug) {
             console.debug('Play single track', typeId);
         }
-        if (this.instance?.element?.paused === false) {
-            this.previousInstance = this.instance;
-            if (this.debug) {
-                console.debug('Fade out single track', this.previousInstance?.typeId);
-            }
-        }
+        this._endCurrent();
+        const type = this.engine.getType(typeId);
+        const fadeIn = type?.fadeIn ?? true;
         this.instance = this.engine.play(typeId, {
             ...(options ?? {}),
-            volume: 0,
+            volume: fadeIn ? 0 : 1,
         });
+        if (this.instance === this.previousInstance) {
+            this.previousInstance = undefined;
+        }
     }
     playEmpty() {
+        this._endCurrent();
+    }
+    _endCurrent() {
         if (this.instance?.element?.paused === false) {
-            this.previousInstance = this.instance;
-            if (this.debug) {
-                console.debug('Fade out single track', this.previousInstance?.typeId);
+            const type = this.engine.getType(this.instance.typeId);
+            if (type?.fadeOut ?? true) {
+                this.previousInstance = this.instance;
+                if (this.debug) {
+                    console.debug('Fade out single track', this.previousInstance?.typeId);
+                }
+            }
+            else {
+                this.engine.pause(this.instance);
+                if (this.debug) {
+                    console.debug('Stop single track', this.instance.typeId);
+                }
             }
         }
         this.instance = undefined;

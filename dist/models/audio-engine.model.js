@@ -70,6 +70,9 @@ class AudioEngine {
         this.cache.clear();
         this.playing.clear();
     }
+    getType(typeId) {
+        return this.types.get(typeId);
+    }
     onDocumentClicked = () => {
         this._audioConsentReceived = true;
         document.removeEventListener('click', this.onDocumentClicked);

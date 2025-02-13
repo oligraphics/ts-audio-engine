@@ -24,6 +24,7 @@ export declare class AudioEngine {
     debug: boolean;
     constructor(audioTypes: AudioConfigurationDto[]);
     dispose(): void;
+    getType(typeId: string): AudioConfigurationDto | undefined;
     private readonly onDocumentClicked;
     /**
      * Create a new sound instance
