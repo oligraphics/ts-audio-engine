@@ -53,10 +53,17 @@ export class AudioEngine {
       for (const instance of playing.values()) {
         const element = instance.element;
         if (element) {
-          element.volume = instance.volume * this._globalVolumeFactor;
+          element.volume = instance.volume * this.globalVolumeFactor;
         }
       }
     }
+  }
+
+  private get globalVolumeFactor(): number {
+    return (
+      this._globalVolumeFactor *
+      (document.visibilityState === 'visible' ? 1 : 0)
+    );
   }
 
   /**
@@ -78,9 +85,18 @@ export class AudioEngine {
     }
 
     document.addEventListener('click', this.onDocumentClicked);
+    document.addEventListener(
+      'visibilitychange',
+      this.onDocumentVisibilityChange,
+    );
   }
 
   dispose() {
+    document.removeEventListener('click', this.onDocumentClicked);
+    document.removeEventListener(
+      'visibilitychange',
+      this.onDocumentVisibilityChange,
+    );
     for (const list of this.cache.values()) {
       for (const element of list.flatMap((e) => e.elements)) {
         element.remove();
@@ -100,6 +116,10 @@ export class AudioEngine {
   getType(typeId: string) {
     return this.types.get(typeId);
   }
+
+  private readonly onDocumentVisibilityChange = () => {
+    this.volume = this.volume;
+  };
 
   private readonly onDocumentClicked = () => {
     this._audioConsentReceived = true;
@@ -280,7 +300,7 @@ export class AudioEngine {
     instance.playing = true;
 
     for (const element of instance.elements) {
-      element.volume = volume * this._globalVolumeFactor;
+      element.volume = volume * this.globalVolumeFactor;
       element.playbackRate = pitch;
     }
 
@@ -312,7 +332,7 @@ export class AudioEngine {
     }
     instance.volume = volume;
     if (instance.element) {
-      instance.element.volume = volume * this._globalVolumeFactor;
+      instance.element.volume = volume * this.globalVolumeFactor;
     }
     this.bus.trigger(AudioEventTypeEnum.VOLUME_CHANGED, <
       AudioVolumeChangedEventDto

@@ -40,10 +40,14 @@ class AudioEngine {
             for (const instance of playing.values()) {
                 const element = instance.element;
                 if (element) {
-                    element.volume = instance.volume * this._globalVolumeFactor;
+                    element.volume = instance.volume * this.globalVolumeFactor;
                 }
             }
         }
+    }
+    get globalVolumeFactor() {
+        return (this._globalVolumeFactor *
+            (document.visibilityState === 'visible' ? 1 : 0));
     }
     /**
      * Toggle console logging
@@ -62,8 +66,11 @@ class AudioEngine {
             }
         }
         document.addEventListener('click', this.onDocumentClicked);
+        document.addEventListener('visibilitychange', this.onDocumentVisibilityChange);
     }
     dispose() {
+        document.removeEventListener('click', this.onDocumentClicked);
+        document.removeEventListener('visibilitychange', this.onDocumentVisibilityChange);
         for (const list of this.cache.values()) {
             for (const element of list.flatMap((e) => e.elements)) {
                 element.remove();
@@ -82,6 +89,9 @@ class AudioEngine {
     getType(typeId) {
         return this.types.get(typeId);
     }
+    onDocumentVisibilityChange = () => {
+        this.volume = this.volume;
+    };
     onDocumentClicked = () => {
         this._audioConsentReceived = true;
         document.removeEventListener('click', this.onDocumentClicked);
@@ -232,7 +242,7 @@ class AudioEngine {
         instance.pitch = pitch;
         instance.playing = true;
         for (const element of instance.elements) {
-            element.volume = volume * this._globalVolumeFactor;
+            element.volume = volume * this.globalVolumeFactor;
             element.playbackRate = pitch;
         }
         if (this.debug) {
@@ -260,7 +270,7 @@ class AudioEngine {
         }
         instance.volume = volume;
         if (instance.element) {
-            instance.element.volume = volume * this._globalVolumeFactor;
+            instance.element.volume = volume * this.globalVolumeFactor;
         }
         this.bus.trigger(audio_event_type_enum_1.AudioEventTypeEnum.VOLUME_CHANGED, {
             type: audio_event_type_enum_1.AudioEventTypeEnum.VOLUME_CHANGED,

@@ -27,6 +27,7 @@ export declare class AudioEngine {
      * Value between 0 and 1
      */
     set volume(value: number);
+    private get globalVolumeFactor();
     /**
      * Toggle console logging
      */
@@ -34,6 +35,7 @@ export declare class AudioEngine {
     constructor(audioTypes: AudioConfigurationDto[]);
     dispose(): void;
     getType(typeId: string): AudioConfigurationDto | undefined;
+    private readonly onDocumentVisibilityChange;
     private readonly onDocumentClicked;
     /**
      * Create a new sound instance

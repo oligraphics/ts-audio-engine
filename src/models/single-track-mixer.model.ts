@@ -63,7 +63,7 @@ export class SingleTrackMixer {
     }
     const time = Date.now();
     const deltaTime = (time - this.lastTick) / this.transitionDurationMs;
-    if (this.instance?.element && this.instance.element.volume < 1) {
+    if (this.instance?.element && this.instance.volume < 1) {
       const volume = this.instance.element.volume;
       this.engine.setVolume(
         this.instance,
@@ -71,7 +71,7 @@ export class SingleTrackMixer {
       );
     }
     if (this.previousInstance?.element) {
-      const volume = this.previousInstance.element.volume;
+      const volume = this.previousInstance.volume;
       const newVolume = this.fadeOut ? Math.max(0, volume - deltaTime) : 0;
       this.engine.setVolume(this.previousInstance, newVolume);
       if (newVolume <= 0) {
