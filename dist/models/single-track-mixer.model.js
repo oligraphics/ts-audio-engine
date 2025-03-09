@@ -98,6 +98,9 @@ class SingleTrackMixer {
         if (this.instance?.playing === true) {
             const type = this.engine.getType(this.instance.typeId);
             if (type?.fadeOut ?? true) {
+                if (this.previousInstance) {
+                    this.engine.pause(this.previousInstance);
+                }
                 this.previousInstance = this.instance;
                 if (this.debug) {
                     console.debug('Fade out single track', this.previousInstance?.typeId);

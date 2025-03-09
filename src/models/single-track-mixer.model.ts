@@ -130,6 +130,9 @@ export class SingleTrackMixer {
         this.instance.typeId,
       ) as SingleTrackAudioConfigurationDto;
       if (type?.fadeOut ?? true) {
+        if (this.previousInstance) {
+          this.engine.pause(this.previousInstance);
+        }
         this.previousInstance = this.instance;
         if (this.debug) {
           console.debug('Fade out single track', this.previousInstance?.typeId);
