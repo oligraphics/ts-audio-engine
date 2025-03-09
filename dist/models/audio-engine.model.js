@@ -121,7 +121,11 @@ class AudioEngine {
             id,
             typeId,
             url: type.url,
-            volume: 1,
+            baseVolume: 1,
+            volumeMultiplier: 1,
+            get volume() {
+                return this.baseVolume * this.volumeMultiplier;
+            },
             pitch: 1,
             element: undefined,
             variant: Math.floor(Math.random() * urls.length),
@@ -226,23 +230,23 @@ class AudioEngine {
         if (this.debug) {
             console.debug('Play', typeId, 'active instances:', playing.size);
         }
-        const baseVolume = options?.volume !== undefined ? options.volume : 1;
         const typeVolume = type?.volume ?? 1;
         const randomTypeVolume = type?.randomize?.volume !== undefined
             ? Math.random() * type.randomize.volume
             : 0;
-        const volume = baseVolume *
-            (typeVolume - (type?.randomize?.volume ?? 0) / 2 + randomTypeVolume);
+        const volume = typeVolume - (type?.randomize?.volume ?? 0) / 2 + randomTypeVolume;
         const basePitch = type?.pitch ?? 1;
         const randomPitch = type?.randomize?.pitch !== undefined
             ? Math.random() * type.randomize.pitch
             : 0;
         const pitch = basePitch - (type?.randomize?.pitch ?? 0) / 2 + randomPitch;
-        instance.volume = volume;
+        instance.baseVolume = volume;
+        instance.volumeMultiplier =
+            options?.volume !== undefined ? options.volume : 1;
         instance.pitch = pitch;
         instance.playing = true;
         for (const element of instance.elements) {
-            element.volume = volume * this.globalVolumeFactor;
+            element.volume = instance.volume * this.globalVolumeFactor;
             element.playbackRate = pitch;
         }
         if (this.debug) {
@@ -268,9 +272,9 @@ class AudioEngine {
         if (this.debug) {
             console.debug('Set volume of', instance.id, 'to', JSON.stringify(volume));
         }
-        instance.volume = volume;
+        instance.volumeMultiplier = volume;
         if (instance.element) {
-            instance.element.volume = volume * this.globalVolumeFactor;
+            instance.element.volume = instance.volume * this.globalVolumeFactor;
         }
         this.bus.trigger(audio_event_type_enum_1.AudioEventTypeEnum.VOLUME_CHANGED, {
             type: audio_event_type_enum_1.AudioEventTypeEnum.VOLUME_CHANGED,
