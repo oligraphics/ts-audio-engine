@@ -124,7 +124,7 @@ class AudioEngine {
             baseVolume: 1,
             volumeMultiplier: 1,
             get volume() {
-                return this.baseVolume * this.volumeMultiplier;
+                return instance.baseVolume * instance.volumeMultiplier;
             },
             pitch: 1,
             element: undefined,
@@ -270,7 +270,7 @@ class AudioEngine {
      */
     setVolume(instance, volume) {
         if (this.debug) {
-            console.debug('Set volume of', instance.id, 'to', JSON.stringify(volume));
+            console.debug('Set volume of', instance.typeId, `(${instance.id})`, 'to', volume);
         }
         instance.volumeMultiplier = volume;
         if (instance.element) {
@@ -302,11 +302,11 @@ class AudioEngine {
      */
     release(instance) {
         if (this.debug) {
-            console.debug('release', instance.id);
+            console.debug('release', instance.typeId, `(${instance.id})`);
         }
         if (instance.element) {
             if (this.debug) {
-                console.debug('Volume of', instance.id, 'was', instance.element.volume);
+                console.debug('Volume of', instance.typeId, `(${instance.id})`, 'was', instance.element.volume);
             }
             instance.element.pause();
         }
